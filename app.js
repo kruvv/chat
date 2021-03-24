@@ -7,8 +7,9 @@ var http = require('http');
 var path = require('path');
 // var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-// var errorhandler = require('errorhandler');
+var errorhandler = require('errorhandler');
 var config = require('./config');
+var log = require('./libs/log')(module);
 
 // var indexRouter = require('./routes/index');
 // var usersRouter = require('./routes/users');
@@ -21,7 +22,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 http.createServer(app).listen(app.get('port'), () => {
-  logger('Express server listening on port ' + config.get('port'));
+  log.info('Express server listening on port ' + config.get('port'));
 })
 
 
@@ -92,8 +93,9 @@ app.use((req, res, next) => {
 app.use(function(err, req, res, next) {
   //NODE_ENV = 'production'
   if(app.get('env') == 'development') {
+    console.log(app.get('env'));
     // var errorHandler = express.errorHandler();
-    // app.use(errorhandler())
+    app.use(errorhandler( ))
   } else {
     res.send(500);
   }
