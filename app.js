@@ -3,7 +3,7 @@ var createError = require('http-errors');
 var express = require('express');
 var app = express();
 
-var http = require('http');
+// var http = require('http');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -13,18 +13,19 @@ var log = require('./libs/log')(module);
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
-app.set('port', config.get('port'));
 
+
+
+/* Create server*/
+// app.set('port', config.get('port'));
+// http.createServer(app).listen(app.get('port'), () => {
+  // log.info('Express server listening on port ' + config.get('port'));
+// })
 
 // view engine setup
 app.engine('ejs', require('ejs-locals')); //layout, partial, block
 app.set('views', path.join(__dirname, 'template'));
 app.set('view engine', 'ejs');
-
-http.createServer(app).listen(app.get('port'), () => {
-  log.info('Express server listening on port ' + config.get('port'));
-})
-
 
 app.use(logger('dev'));
 app.use(express.json());
