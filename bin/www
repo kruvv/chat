@@ -11,7 +11,7 @@ var http = require('http');
 var config = require('../config');
 var log = require('../libs/log')(module);
 
-const mongoose = require('mongoose');
+const mongoose = require('../libs/mongoose');
 
 /**
  * Get port from environment and store in Express.
@@ -24,7 +24,7 @@ app.set('port', port);
 
 async function start() {
   try {
-    await mongoose.connect(config.get('mongoUri'), {
+    await mongoose.connect(config.get('mongoose:uri'), {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true

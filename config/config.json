@@ -1,4 +1,15 @@
 {
     "port": 3000,
-    "mongoUri": "mongodb+srv://kruvv:1qaz@cluster0.otxs8.mongodb.net/chat?retryWrites=true&w=majority"
+    "mongoUri": "mongodb+srv://kruvv:1qaz@cluster0.otxs8.mongodb.net/chat?retryWrites=true&w=majority",
+    "mongoose": {
+        "uri": "mongodb://localhost/chat",
+        "options": {
+            "server": {
+                "socketOptions": {
+                    "keepAlive": 1
+                }
+            }
+        }
+
+    }
 }
