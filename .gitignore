@@ -25,3 +25,6 @@ errors.log
 
 # vscode
 .vscode
+
+# ENV
+.env
