@@ -8,7 +8,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var config = require('./config');
-var log = require('./libs/log')(module);
+var log = require('./lib/log')(module);
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');

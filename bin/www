@@ -9,9 +9,10 @@ var debug = require('debug')('chat:server');
 var http = require('http');
 
 var config = require('../config');
-var log = require('../libs/log')(module);
+var log = require('../lib/log')(module);
 
-const mongoose = require('../libs/mongoose');
+// const mongoose = require('../lib/mongoose');
+const mongoose = require('mongoose');
 
 /**
  * Get port from environment and store in Express.
