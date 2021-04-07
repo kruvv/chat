@@ -1,12 +1,20 @@
-var express = require('express');
+const express = require('express');
 const HttpError = require('../error');
-var router = express.Router();
-
-var User = require('../models/user');
+const router = express.Router();
+const User = require('../models/user');
+const ObjectID = require('mongodb').ObjectID;
 
 /* GET /user/:id */
 router.get('/:id', function(req, res, next) {
-  User.findById(req.params.id, function(err, user) {
+
+  // Create a new ObjectID
+  try {
+    const objectId = new ObjectID(req.params.id);
+  } catch (error) {
+    return next(404);
+  }
+
+  User.findById(objectId, function(err, user) {
     if (err) return next(err);
     if (!user) {
       next(new HttpError(404, 'User not found!!!'))

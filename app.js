@@ -13,6 +13,8 @@ var log = require('./lib/log')(module);
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var userIdRouter = require('./routes/userId');
+const HttpError = require('./error');
+
 
 
 
@@ -33,6 +35,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(require('./middleware/sendHttpError'));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -46,6 +49,23 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
+
+  if (typeof err === 'number') {
+    err = new HttpError(err);
+  }
+
+  if (err instanceof HttpError) {
+    res.sendHttpError(err);
+  } else {
+    if (app.get('env') === 'development') {
+    }
+      else {
+        log.error(err);
+        err = new HttpError(500);
+        res.sendHttpError(err);
+      }
+  }
+
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -53,6 +73,7 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
+
 });
 
 module.exports = app;

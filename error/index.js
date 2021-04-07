@@ -1,6 +1,6 @@
-var path = require('path');
-var util = require('util');
-var http = require('http');
+const path = require('path');
+const util = require('util');
+const http = require('http');
 
 // ошибки для выдачи посетителю
 function HttpError(status, message) {
