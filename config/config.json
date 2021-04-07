@@ -10,5 +10,14 @@
                 }
             }
         }
+    },
+    "session": {
+        "secret": "1qaz2wsx",
+        "key": "sid",
+        "cookie": {
+            "path": "/",
+            "httpOnly": true,
+            "maxAge": null
+        }
     }
 }
