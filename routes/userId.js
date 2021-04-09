@@ -8,8 +8,9 @@ const ObjectID = require('mongodb').ObjectID;
 router.get('/:id', function(req, res, next) {
 
   // Create a new ObjectID
+  let objectId;
   try {
-    const objectId = new ObjectID(req.params.id);
+     objectId = new ObjectID(req.params.id);
   } catch (error) {
     return next(404);
   }
