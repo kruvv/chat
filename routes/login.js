@@ -29,7 +29,7 @@ router.post('/', function(req, res, next) {
           next(new HttpError(403, "Пароль неверный"));
         }
       } else {
-        const user = new User({username: username, password: password});
+        let user = new User({username: username, password: password});
         user.save(function(err) {
           if (err) return next(err);
           // ...200 OK
@@ -37,7 +37,7 @@ router.post('/', function(req, res, next) {
         });
       }
     }
-  ], function(err) {
+  ], function(err, user) {
     if(err) return next(err);
     req.session.user = user._id;
     res.send({});

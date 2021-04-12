@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const { Schema, model } = require('mongoose');
 
-const schema = new Schema({
+let schema = new Schema({
     username: {
         type: String,
         unique: true,
@@ -21,8 +21,9 @@ const schema = new Schema({
     }
 });
 
-schema.methods.encryptPassword = (password) => {
+schema.methods.encryptPassword = function(password) {
     return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
+    
 }
 
 schema.virtual('password')
@@ -33,7 +34,7 @@ schema.virtual('password')
     })
     .get(function() { return this._plainPassword; });
 
-schema.methods.checkPassword = (password) => {
+schema.methods.checkPassword = function(password) {
     return this.encryptPassword(password) === this.hashedPassword;
 }
 
