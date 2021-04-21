@@ -1,5 +1,8 @@
 const crypto = require('crypto');
 const { Schema, model } = require('mongoose');
+const async = require('async');
+const util = require('util');
+const AuthError = require('../error/index');
 
 let schema = new Schema({
     username: {
@@ -23,7 +26,7 @@ let schema = new Schema({
 
 schema.methods.encryptPassword = function(password) {
     return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
-    
+
 }
 
 schema.virtual('password')
@@ -38,5 +41,49 @@ schema.methods.checkPassword = function(password) {
     return this.encryptPassword(password) === this.hashedPassword;
 }
 
+schema.statics.authorize = function(username, password, callback) {
+
+    const User = this;
+
+    async.waterfall([
+        function(callback) {
+          User.findOne({username: username}, callback);
+        },
+        function(user, callback) {
+          if (user) {
+            if (user.checkPassword(password)) {
+              // ...200 OK
+              callback(null, user);
+            } else {
+              // ...403 Forbidden
+              callback(new AuthError("Пароль неверный"));
+            }
+          } else {
+            let user = new User({username: username, password: password});
+            user.save(function(err) {
+              if (err) return callback(err);
+              // ...200 OK
+              callback(null, user);
+            });
+          }
+        }
+      ], callback);
+}
+
 
 module.exports = model('User', schema);
+
+
+// // Ошибка авторизации
+// function AuthError(message) {
+    // Error.apply(this, arguments);
+    // Error.captureStackTrace(this, AuthError);
+
+    // this.message = message;
+//   }
+
+//   util.inherits(AuthError, Error);
+
+//   AuthError.prototype.name = 'AuthError';
+
+//   module.exports = AuthError;

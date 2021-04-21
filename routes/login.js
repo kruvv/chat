@@ -1,45 +1,28 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const User = require('../models/user');
-const async = require('async');
-const HttpError = require('../error');
-
+const User = require("../models/user");
+const HttpError = require("../error");
+const AuthError = require("../models/user");
 
 /** GET  /login  */
-router.get('/', function(req, res) {
-  res.render('login');
+router.get("/", function (req, res) {
+  res.render("login");
 });
 
 /** POST  /login */
-router.post('/', function(req, res, next) {
+router.post("/", function (req, res, next) {
   const username = req.body.username;
   const password = req.body.password;
 
-  async.waterfall([
-    function(callback) {
-      User.findOne({username: username}, callback);
-    },
-    function(user, callback) {
-      if (user) {
-        if (user.checkPassword(password)) {
-          // ...200 OK
-          callback(null, user);
-        } else {
-          // ...403 Forbidden
-          next(new HttpError(403, "Пароль неверный"));
-        }
+  User.authorize(username, password, function (err, user) {
+    if (err) {
+      if (err instanceof AuthError) {
+        return next(new HttpError(403, err.message));
       } else {
-        let user = new User({username: username, password: password});
-        user.save(function(err) {
-          if (err) return next(err);
-          // ...200 OK
-          callback(null, user);
-        });
+        return next(err);
       }
     }
-  ], function(err, user) {
-    if(err) return next(err);
-    req.session.user = user._id;
+    req.session.user = user.id;
     res.send({});
   });
 });

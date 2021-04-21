@@ -1,8 +1,15 @@
-<nav class="navbar navbar-default" role="navigation">
-    <ul class="navbar navbar-nav">
-        <li><a class="nav-link" href="/">Главная</a></li>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active"><a class="nav-link" href="/">Главная</a></li>
+      <% if (user) { %>
+      <li class="nav-item"><a class="nav-link" href="/chat">Чат</a></li>
+      <% } %>
     </ul>
-    <ul class="navbar navbar-nav navbar-right">
-        <li><a class="nav-link" href="/login">Войти</a></li>
+    <ul class="navbar-nav  navbar-right">
+      <% if (user) { %>
+      <li class="nav-item"><a class="nav-link" href="" onclick="$('<form method=POST action=/logout>').appendTo('body').submit();return false">Выйти</a></form></li>
+      <% } else { %>
+      <li class="nav-item"><a class="nav-link" href="/login">Войти</a></li>
+      <% } %>
     </ul>
-</nav>
+  </nav>
