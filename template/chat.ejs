@@ -1,5 +1,33 @@
 <% layout('/layout/page') -%> <% block('title', "Чат") -%>
 
-<p class="lead">Здесь будет чат</p>
+<script src="/socket.io/socket.io.js"></script>
 
-<p class="">Добро пожаловать, <%=user.get('username')%></p>
+<div id="room">
+  <form>
+    <input
+      class="form-control"
+      autocomplete="off"
+      autofocus
+      placeholder="Сообщение..."
+    />
+  </form>
+  <ul></ul>
+</div>
+
+<script>
+  var socket = io();
+  var form = $("#room form");
+  var ul = $("#room ul");
+  form.submit(function () {
+    var input = $(this).find("input");
+    var text = input.val();
+    input.val("");
+    socket.emit("message", text, function (data) {
+      $("<li>", { text: text }).appendTo(ul);
+    });
+    return false;
+  });
+  socket.on("message", function (text) {
+    $("<li>", { text: text }).appendTo(ul);
+  });
+</script>
