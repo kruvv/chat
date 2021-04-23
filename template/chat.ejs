@@ -1,6 +1,6 @@
 <% layout('/layout/page') -%> <% block('title', "Чат") -%>
 
-<script src="/socket.io/socket.io.js"></script>
+<script src="/vendor/bower_components/socket.io-client/dist/socket.io.js"></script>
 
 <div id="room">
   <form>
@@ -11,23 +11,52 @@
       placeholder="Сообщение..."
     />
   </form>
-  <ul></ul>
+  <ul class="chat-out"></ul>
 </div>
 
 <script>
-  var socket = io();
-  var form = $("#room form");
-  var ul = $("#room ul");
-  form.submit(function () {
-    var input = $(this).find("input");
-    var text = input.val();
-    input.val("");
-    socket.emit("message", text, function (data) {
-      $("<li>", { text: text }).appendTo(ul);
+  const input = $("#room input");
+  const ul = $("#room ul");
+  const form = $("#room form");
+
+  const socket = io({
+    path: "/chat",
+    reconnection: true,
+  });
+  socket
+    .on("message", function (message) {
+      printMessage(message);
+      console.log(socket.id);
+    })
+    .on("connect", function () {
+      printStatus("соединение установлено");
+      form.on("submit", sendMessage);
+      input.prop("disabled", false);
+    })
+    .on("disconnect", function () {
+      printStatus("соединение потеряно");
+      form.off("submit", sendMessage);
+      input.prop("disabled", true);
+      setTimeout(reconnect, 500);
     });
+  function sendMessage() {
+    var text = input.val();
+    socket.emit("message", text, function () {
+      printMessage(text);
+    });
+    input.val("");
     return false;
-  });
-  socket.on("message", function (text) {
-    $("<li>", { text: text }).appendTo(ul);
-  });
+  }
+  function reconnect() {
+    socket.once("error", function () {
+      setTimeout(reconnect, 500);
+    });
+    socket.socket.connect();
+  }
+  function printStatus(status) {
+    $("<li>").append($("<i>").text(status)).appendTo(ul);
+  }
+  function printMessage(text) {
+    $("<li>").text(text).appendTo(ul);
+  }
 </script>
