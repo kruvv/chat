@@ -23,10 +23,16 @@
     path: "/chat",
     reconnection: true,
   });
+
   socket
-    .on("message", function (message) {
-      printMessage(message);
-      console.log(socket.id);
+    .on("message", function (username, message) {
+      printMessage(username + "> " + message);
+    })
+    .on("leave", function (username) {
+      printStatus(username + " вышел из чата");
+    })
+    .on("join", function (username) {
+      printStatus(username + " вошёл в чат");
     })
     .on("connect", function () {
       printStatus("соединение установлено");
@@ -37,10 +43,23 @@
       printStatus("соединение потеряно");
       form.off("submit", sendMessage);
       input.prop("disabled", true);
-      setTimeout(reconnect, 500);
+      this.$emit("error");
+    })
+    .on("logout", function () {
+      location.href = "/";
+    })
+    .on("error", function (reason) {
+      if (reason == "handshake unauthorized") {
+        printStatus("вы вышли из сайта");
+      } else {
+        setTimeout(function () {
+          socket.socket.connect();
+        }, 500);
+      }
     });
+
   function sendMessage() {
-    var text = input.val();
+    const text = input.val();
     socket.emit("message", text, function () {
       printMessage(text);
     });

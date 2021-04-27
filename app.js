@@ -35,14 +35,14 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+const sessionStore = require('./lib/sessionStore')
 app.use(
   session({
     secret: config.get("session:secret"),
     key: config.get("session:key"),
     cookie: config.get("session:cookie"),
-    store: MongoStore.create({
-      mongoUrl: config.get("mongoose:uri"),
-    }),
+    store: sessionStore
   })
 );
 app.use(express.static(path.join(__dirname, "public")));

@@ -42,7 +42,9 @@ async function start() {
 
     const server = http.createServer(app);
 
-    require("../socket")(server);
+    const io = require("../socket")(server);
+
+    app.set('io', io);
 
     /**
      * Listen on provided port, on all network interfaces.
