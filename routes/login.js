@@ -22,7 +22,11 @@ router.post("/", function (req, res, next) {
         return next(err);
       }
     }
-    req.session.user = user.id;
+    //TODO: delete
+    // console.log('user:', user);
+
+    req.session.user = user._id;
+
     res.send({});
   });
 });

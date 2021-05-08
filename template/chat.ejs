@@ -1,4 +1,5 @@
-<% layout('/layout/page') -%> <% block('title', "Чат") -%>
+<% layout('/layout/page') -%>
+<% block('title', "Чат") -%>
 
 <script src="/vendor/bower_components/socket.io-client/dist/socket.io.js"></script>
 
@@ -20,7 +21,7 @@
   const form = $("#room form");
 
   const socket = io({
-    path: "/chat",
+    // path: "/chat",
     reconnection: true,
   });
 
@@ -66,15 +67,18 @@
     input.val("");
     return false;
   }
+
   function reconnect() {
     socket.once("error", function () {
       setTimeout(reconnect, 500);
     });
     socket.socket.connect();
   }
+
   function printStatus(status) {
     $("<li>").append($("<i>").text(status)).appendTo(ul);
   }
+
   function printMessage(text) {
     $("<li>").text(text).appendTo(ul);
   }
